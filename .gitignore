@@ -1,2 +1,5 @@
 # datafiles
 /input
+
+# dot files
+.vscode
