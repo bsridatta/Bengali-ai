@@ -4,6 +4,7 @@ from iterstrat.ml_stratifiers import MultilabelStratifiedKFold
 
 if __name__ == "__main__":
     train_df = pd.read_csv(f"{os.path.dirname(os.getcwd())}/input/train.csv")
+    # Enforce k_fold as int
     train_df.loc[:,'k_fold'] = -1
 
     train_df = train_df.sample(frac=1).reset_index(drop=True)
