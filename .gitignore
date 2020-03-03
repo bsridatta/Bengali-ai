@@ -3,3 +3,6 @@
 
 # dot files
 .vscode
+
+# cache
+__pycache__/
