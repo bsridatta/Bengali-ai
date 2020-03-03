@@ -11,31 +11,39 @@ class BengaliAI(Dataset):
     """Bengali AI dataset for training PyTorch models"""
 
     def __init__(self, folds, train=True, transform=None, 
-                 img_height=137, img_width=236):
+                 img_height=137, img_width=236, test_id = 0,
+                 data_root = f'{os.path.dirname(os.getcwd())}/input'):
         """
         Arguments: 
-            train (boolean) -- if true fetches train data else test
-            transform (callable) -- Transform to be applied on each sample 
-            # using albumenations internally
             fold (list) -- list of folds to be used
+            train (boolean) -- if true fetches train data else test
+            test_id (int) -- parquet file id
+            transform (callable) -- Transform to be applied on each sample 
+            data_root (string) --  root path to input or dir of data
+
         """
         self.train = train
         self.transform = transform
+        self.data_root = data_root
 
         file = 'train_folds' if self.train else 'test'         
-        self.metadata = pd.read_csv(f'{os.path.dirname(os.getcwd())}/input/{file}.csv')
-        self.metadata = self.metadata.drop('grapheme', axis=1)
-        self.metadata = self.metadata[self.metadata.kfolds.isin(folds)].reset_index(drop=True)
-
+        self.metadata = pd.read_csv(f'{data_root}/{file}.csv')
         if train:
+            self.metadata = self.metadata.drop('grapheme', axis=1)
+            self.metadata = self.metadata[self.metadata.k_fold.isin(folds)].reset_index(drop=True)
+
             self.grapheme_roots = self.metadata.grapheme_root.values
             self.vowel_diacritics = self.metadata.vowel_diacritic.values
             self.consonant_diacritics = self.metadata.consonant_diacritic.values
+            self.image_ids = self.metadata.image_id.values
 
-        self.image_ids = self.metadata.image_id.values
+        else:
+            df = pd.read_parquet(f'{data_root}/test_image_data_{test_id}.parquet')
+            self.image_ids = df.image_id.values # could also get from metadata
+            self.image_array = df.iloc[:, 1:].values
+
         
-
-        if len(folds) == 1: # validation
+        if (len(folds) == 1 and train) or not train: # validation and test
             self.augmentations = albumentations.Compose([
                 albumentations.Resize(img_height, img_width, always_apply=True),
                 albumentations.Normalize(always_apply=True) 
@@ -61,14 +69,18 @@ class BengaliAI(Dataset):
             sample (dic) -- Each sample is a dic with keys as image_id, image, grapheme_root, vowel_diacritic, consonant_diacritic
         """
         sample = {'image_id': self.image_ids[idx]}
-        image = joblib.load(f'{os.path.dirname(os.getcwd())}/input/image_pickles/{self.image_ids[idx]}.pkl')
+
+        if not self.train: # test
+            image = self.image_array[idx, :]
+        else: # train or val
+            image = joblib.load(f'{self.data_root}/image_pickles/{self.image_ids[idx]}.pkl')
+        
         image = image.reshape(137,236).astype(float)
         image = Image.fromarray(image).convert("RGB")
         image = np.array(image)
         image = self.augmentations(image=image)['image']
         image = np.transpose(image, (2, 0, 1)).astype(np.float32)
         sample['image'] = image
-        
         
         if self.train:           
             sample['grapheme_root'] = torch.tensor(self.grapheme_roots[idx], dtype=torch.long)
