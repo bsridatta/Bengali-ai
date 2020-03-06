@@ -3,6 +3,8 @@
 
 # dot files
 .vscode
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
 
 # cache
 __pycache__/
