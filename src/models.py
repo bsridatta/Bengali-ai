@@ -10,9 +10,6 @@ class EfficientNetB5(nn.Module):
         # build model
         self.__build_model()
 
-    # ---------------------
-    # MODEL SETUP
-    # ---------------------
     def __build_model(self):
         """
         Model Components
@@ -27,9 +24,6 @@ class EfficientNetB5(nn.Module):
         self.fc_vowel_diacritic = torch.nn.Linear(in_features, 11)
         self.fc_consonant_diacritic = torch.nn.Linear(in_features, 7)
 
-    # ---------------------
-    # TRAINING
-    # ---------------------
     def forward(self, x):
         x = self.features(x)
         x = torch.flatten(x, 1)
