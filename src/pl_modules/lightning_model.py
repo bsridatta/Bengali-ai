@@ -42,6 +42,8 @@ class EfficientNet(LightningModule):
         # build model
         self.__build_model()
 
+
+
     # ---------------------
     # MODEL SETUP
     # ---------------------
