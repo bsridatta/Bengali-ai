@@ -10,12 +10,12 @@ import torch
 class BengaliAI(Dataset):
     """Bengali AI dataset for training PyTorch models"""
 
-    def __init__(self, folds, train=True, transform=None, 
+    def __init__(self, folds=[0], train=True, transform=None, 
                  img_height=137, img_width=236, test_id = 0,
                  data_root = f'{os.path.dirname(os.getcwd())}/input'):
         """
         Arguments: 
-            fold (list) -- list of folds to be used
+            fold (list) -- list of folds to be used - Ignored for test
             train (boolean) -- if true fetches train data else test
             test_id (int) -- parquet file id
             transform (callable) -- Transform to be applied on each sample 
