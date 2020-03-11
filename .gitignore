@@ -2,7 +2,7 @@
 /input
 
 # Junk files
-notebooks/verify_stuff.ipynb
+verify_stuff.ipynb
 
 # dot files
 .vscode
