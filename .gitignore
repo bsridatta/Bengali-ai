@@ -1,10 +1,16 @@
 # datafiles
 /input
 
+# Junk files
+notebooks/verify_stuff.ipynb
+
 # dot files
 .vscode
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
+
+# checkpoints
+/checkpoints
 
 # cache
 __pycache__/
