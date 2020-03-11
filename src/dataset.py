@@ -80,7 +80,7 @@ class BengaliAI(Dataset):
         image = np.array(image)
         image = self.augmentations(image=image)['image']
         image = np.transpose(image, (2, 0, 1)).astype(np.float32)
-        sample['image'] = image
+        sample['image'] = torch.tensor(image, dtype=torch.float32)
         
         if self.train:           
             sample['grapheme_root'] = torch.tensor(self.grapheme_roots[idx], dtype=torch.long)
