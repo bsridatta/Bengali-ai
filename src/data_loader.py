@@ -20,7 +20,7 @@ def train_dataloader(params):
 
     return loader
 
-def val_dataloader(params):,
+def val_dataloader(params):
     dataset = BengaliAI(folds=params.val_folds, train=True, 
                         data_root=params.data_root)
 
