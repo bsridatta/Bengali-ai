@@ -23,7 +23,7 @@ def main():
     device = torch.device("cuda" if use_cuda else "cpu")
     logging.info(f'using device: {device}')
     config.device = device # Adding device to config, not already in argparse
-    config.num_workers = 1 if use_cuda else 4 # for dataloader
+    config.num_workers = 4 if use_cuda else 4 # for dataloader
     config.pin_memory = False if use_cuda else False
 
     # Data loading
