@@ -1,4 +1,4 @@
-python3 ../src/train.py \
+python3.7 ../src/train.py \
     --cuda True\
     --seed 400\
     --data_root ../input\
