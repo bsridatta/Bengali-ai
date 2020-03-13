@@ -3,7 +3,7 @@ import sys
 
 from argparse import ArgumentParser
 import logging 
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 
 import torch
 
@@ -63,7 +63,7 @@ def training_specific_args():
 
         # data
         parser.add_argument('--data_root', default=f'{os.path.dirname(os.getcwd())}/input', type=str)
-        parser.add_argument('--train_folds', default=[0,1,2], choices=range(4), nargs='+', type=list)
+        parser.add_argument('--train_folds', default=[0,1,2], nargs='+', type=list)
         parser.add_argument('--val_folds', default= [3], choices=range(4), nargs='+', type=int)
         parser.add_argument('--test_id', default=0, choices=range(4), type=int, help='parquet file id') 
 
@@ -79,7 +79,7 @@ def training_specific_args():
         # output
         parser.add_argument('--save_dir', default=f'{os.path.dirname(os.getcwd())}/checkpoints', type=str)
         parser.add_argument('--exp_name', default=f'run_1', type=str)
-        parser.add_argument('--log-interval', type=int, default=1,
+        parser.add_argument('--log_interval', type=int, default=1,
                             help='how many batches to wait before logging training status')        
         return parser
 
