@@ -10,7 +10,7 @@ verify_stuff.ipynb
 */.ipynb_checkpoints/*
 
 # checkpoints
-/checkpoints
+/checkpoints/*.pt
 
 # cache
 __pycache__/
