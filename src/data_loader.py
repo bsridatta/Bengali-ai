@@ -4,7 +4,11 @@ from dataset import BengaliAI
 from torch.utils.data import SubsetRandomSampler
 
 def train_dataloader(params):
-    dataset = BengaliAI(folds=params.train_folds, train=True, 
+    
+    train_folds = [0,1,2,3]
+    train_folds.pop(params.val_folds)
+    
+    dataset = BengaliAI(folds=train_folds, train=True, 
                         data_root=params.data_root)
     
     sampler = SubsetRandomSampler(range(2*params.batch_size)) if params.fast_dev_run else None
@@ -21,7 +25,7 @@ def train_dataloader(params):
     return loader
 
 def val_dataloader(params):
-    dataset = BengaliAI(folds=params.val_folds, train=True, 
+    dataset = BengaliAI(folds=[params.val_folds], train=True, 
                         data_root=params.data_root)
 
     sampler = SubsetRandomSampler(range(params.batch_size)) if params.fast_dev_run else None

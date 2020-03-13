@@ -63,8 +63,7 @@ def training_specific_args():
 
         # data
         parser.add_argument('--data_root', default=f'{os.path.dirname(os.getcwd())}/input', type=str)
-        parser.add_argument('--train_folds', default=[0,1,2], nargs='+', type=list)
-        parser.add_argument('--val_folds', default= [3], choices=range(4), nargs='+', type=int)
+        parser.add_argument('--val_folds', default= 3, type=int)
         parser.add_argument('--test_id', default=0, choices=range(4), type=int, help='parquet file id') 
 
         # network params
