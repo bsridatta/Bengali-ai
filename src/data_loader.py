@@ -5,7 +5,7 @@ from torch.utils.data import SubsetRandomSampler
 
 def train_dataloader(params):
     
-    train_folds = [0,1,2,3]
+    train_folds = [0,1,2,3,4]
     train_folds.pop(params.val_folds)
     
     dataset = BengaliAI(folds=train_folds, train=True, 

@@ -2,7 +2,7 @@ python3.7 ../src/train.py \
     --cuda True\
     --seed 400\
     --data_root ../input\
-    --val_folds 3\
+    --val_folds 4\
     --test_id 0\
     --pretrained False\
     --learning_rate 0.0001\
