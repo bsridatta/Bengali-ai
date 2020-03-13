@@ -15,7 +15,7 @@ def training_epoch(args, model, train_loader, optimizer, epoch):
 
         if batch_idx % args.log_interval == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                epoch, batch_idx * len(batch), len(train_loader.dataset),
+                epoch, batch_idx * len(batch['image_id']), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.item()))   
 
 
@@ -66,7 +66,7 @@ def _validation_step(batch, batch_idx, model):
         acc_vowel = torch.sum(vowel.argmax(dim=1) == batch["vowel_diacritic"]).item() / (len(vowel) * 1.0)
         acc_consonant = torch.sum(consonant.argmax(dim=1) == batch["consonant_diacritic"]).item() / (len(consonant) * 1.0)
         val_acc = acc_grapheme + acc_vowel + acc_consonant
-
+        val_acc = val_acc/3
         logger_logs = {"VLoss_G": loss_grapheme, 
                        "VLoss_V": loss_vowel, 
                        "VLoss_C": loss_consonant,
@@ -76,6 +76,6 @@ def _validation_step(batch, batch_idx, model):
                        "VAcc": val_acc,
                        "Vloss": loss_val
                     }
-
+        
         return OrderedDict({'val_loss': loss_val, 'val_acc': val_acc, 'log': logger_logs})
     
