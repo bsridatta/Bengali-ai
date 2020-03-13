@@ -43,7 +43,7 @@ def main():
 
     if config.resume_pt:
         logging.info(f'Loading {config.resume_pt}')
-        state = torch.load(f'../checkpoints/{config.resume_pt}')
+        state = torch.load(f'{config.save_dir}/{config.resume_pt}')
         model.load_state_dict(state['state_dict'])
         optimizer.load_state_dict(state['optimizer'])
 
