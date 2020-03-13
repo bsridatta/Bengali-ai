@@ -7,7 +7,7 @@ python3.7 ../src/train.py \
     --pretrained True\
     --learning_rate 0.0001\
     --epochs 100\
-    --batch_size 64\
+    --batch_size 32\
     --fast_dev_run False\
     --save_dir ../checkpoints\
     --exp_name b5100e\
