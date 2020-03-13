@@ -1,0 +1,5 @@
+move checkpoint to trainer to save in between epochs
+add key trigger to save current model? and then stop 
+wandb to monitor
+gpu monitoring
+
