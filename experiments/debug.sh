@@ -2,8 +2,8 @@ python3 ../src/train.py \
     --cuda True\
     --seed 400\
     --data_root ../input\
-    --train_folds [0, 1, 2]\
-    --val_folds [3]\
+    --train_folds 0 1 2\
+    --val_folds 3\
     --test_id 0\
     --pretrained False\
     --learning_rate 0.0001\
