@@ -21,7 +21,7 @@ def main():
     # GPU setup    
     use_cuda = config.cuda and torch.cuda.is_available()
     device = torch.device("cuda" if use_cuda else "cpu")
-    logging.info('using device: {device}')
+    logging.info(f'using device: {device}')
     config.device = device # Adding device to config, not already in argparse
     config.num_workers = 1 if use_cuda else 4 # for dataloader
     config.pin_memory = True if use_cuda else False
