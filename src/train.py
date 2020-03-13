@@ -34,12 +34,18 @@ def main():
     # Model
     model = EfficientNetB5(config.pretrained)
     model.to(device)
-    
+
     # Optims - Scheduler monitors recall metric, hence mode = max
     optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', 
                                                            patience=5,
                                                            factor=0.3, verbose=True)
+
+    if config.resume_pt:
+        logging.info(f'Loading {config.resume_pt}')
+        state = torch.load(f'../checkpoints/{config.resume_pt}')
+        model.load_state_dict(state['state_dict'])
+        optimizer.load_state_dict(state['optimizer'])
 
     logging.info('Start training procedure')
     val_loss_min = float('inf')
@@ -51,29 +57,37 @@ def main():
         
         if val_loss < val_loss_min:
             val_loss_min = val_loss
-            torch.save(model.state_dict(), f'{config.save_dir}/{config.exp_name}.pt')
+            state = {
+                'epoch': epoch,
+                'val_loss': val_loss,
+                'model_state_dict': model.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict()
+            }
+            torch.save(state, f'{config.save_dir}/{config.exp_name}_{val_loss}.pt')
 
 def training_specific_args():  
 
         parser = ArgumentParser()
 
         # GPU
-        parser.add_argument('--cuda', default=True, type=bool)
+        parser.add_argument('--cuda', default=True, type=lambda x: (str(x).lower() == 'true'))
         parser.add_argument('--seed', default=400, type=int)
 
         # data
         parser.add_argument('--data_root', default=f'{os.path.dirname(os.getcwd())}/input', type=str)
-        parser.add_argument('--val_folds', default= 3, type=int)
+        parser.add_argument('--val_folds', default= 4, type=int)
         parser.add_argument('--test_id', default=0, choices=range(4), type=int, help='parquet file id') 
 
         # network params
-        parser.add_argument('--pretrained', default=False, type=bool)
+        parser.add_argument('--pretrained', default=False, type=lambda x: (str(x).lower() == 'true'))
         parser.add_argument('--learning_rate', default=1e-4, type=float)
         
         # training params
         parser.add_argument('--epochs', default=2, type=int)
         parser.add_argument('--batch_size', default=4, type=int)
-        parser.add_argument('--fast_dev_run', default=True, type=bool)
+        
+        parser.add_argument('--fast_dev_run', default=True, type=lambda x: (str(x).lower() == 'true'))
+        parser.add_argument('--resume_pt', type=str)
 
         # output
         parser.add_argument('--save_dir', default=f'{os.path.dirname(os.getcwd())}/checkpoints', type=str)
