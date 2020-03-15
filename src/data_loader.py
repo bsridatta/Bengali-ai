@@ -2,7 +2,6 @@ import logging
 import torch
 from dataset import BengaliAI
 from torch.utils.data import SubsetRandomSampler
-from cutmix.cutmix import CutMix
 
 def train_dataloader(params):
     
@@ -61,4 +60,5 @@ def test_dataloader(params):
     logging.info(f'Test data loader called. len - {len(loader)*params.batch_size}')
 
     return loader
+
 
