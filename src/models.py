@@ -18,20 +18,19 @@ class EfficientNetB5(nn.Module):
         if self.pretrained: self.backbone_model = EfficientNet.from_pretrained('efficientnet-b5')
         else: self.backbone_model = EfficientNet.from_name('efficientnet-b5')
 
-        # All layers except last FC (_fc) and Swish layers
-        # backbone_layers = torch.nn.ModuleList(backbone_model.children())[:-2]
-        # self.features = torch.nn.Sequential(*backbone_layers)
-        # in_features = self.backbone_model._fc.in_features
-
-        in_features = self.backbone_model._fc.out_features # out_feat. should be an apt name
+        in_features = self.backbone_model._fc.in_features 
         # Add custom layers to the model
         self.fc_grapheme_root = torch.nn.Linear(in_features, 168)
         self.fc_vowel_diacritic = torch.nn.Linear(in_features, 11)
         self.fc_consonant_diacritic = torch.nn.Linear(in_features, 7)
 
     def forward(self, x):
-        x = self.backbone_model(x)
-        x = torch.flatten(x, 1)
+        bs = x.size(0)
+        x = self.backbone_model.extract_features(x)
+        # x = torch.flatten(x, 1)
+        x = self.backbone_model._avg_pooling(x)
+        x = x.view(bs, -1)
+        x = self.backbone_model._dropout(x)
         
         grapheme = self.fc_grapheme_root(x)
         vowel = self.fc_vowel_diacritic(x)
