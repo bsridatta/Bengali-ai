@@ -3,3 +3,7 @@ add key trigger to save current model? and then stop
 wandb to monitor
 gpu monitoring
 
+cutmix mixup ohem
+freeze
+
+kaggle inference kernel
