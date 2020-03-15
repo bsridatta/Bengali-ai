@@ -7,17 +7,20 @@ def training_epoch(args, model, train_loader, optimizer, epoch):
     for batch_idx, batch in enumerate(train_loader):
         for key in batch.keys():
             batch[key] = batch[key].to(args.device) if key != 'image_id' else batch[key]
+               
         optimizer.zero_grad()
         output = _training_step(batch, batch_idx, model)
+        _log_training_metrics(args, output)
         loss = output['loss_val']
         loss.backward()
         optimizer.step()
-
+        
         if batch_idx % args.log_interval == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 epoch, batch_idx * len(batch['image_id']), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.item()))   
-
+        
+        del loss
 
 def validation_epoch(args, model, val_loader):
     model.eval()
@@ -28,9 +31,12 @@ def validation_epoch(args, model, val_loader):
         for batch_idx, batch in enumerate(val_loader):
             for key in batch.keys():
                 batch[key] = batch[key].to(args.device) if key != 'image_id' else batch[key]
+            
             output = _validation_step(batch, batch_idx, model)
+            _log_validation_metrics(args, output)
             loss += output['val_loss'].item()
             acc += output['val_acc']
+
     avg_loss = loss/len(val_loader)
     avg_acc = acc/len(val_loader)
     print(f'Val set: Average Loss: {avg_loss}, Accuracy: {avg_acc}')
@@ -49,7 +55,8 @@ def _training_step(batch, batch_idx, model):
     logger_logs = {
         "TLoss_G": loss_grapheme, 
         "TLoss_V": loss_vowel, 
-        "TLoss_C": loss_consonant
+        "TLoss_C": loss_consonant,
+        "TLoss": loss_val
     }
 
     return OrderedDict({'loss_val': loss_val, 'log': logger_logs})
@@ -74,8 +81,24 @@ def _validation_step(batch, batch_idx, model):
                        "VAcc_V": acc_vowel, 
                        "VAcc_C": acc_consonant,
                        "VAcc": val_acc,
-                       "Vloss": loss_val
+                       "VLoss": loss_val
                     }
         
         return OrderedDict({'val_loss': loss_val, 'val_acc': val_acc, 'log': logger_logs})
     
+def _log_training_metrics(args, output):
+    logs = output['log']
+    split_loss = dict(filter(lambda item: "TLoss_" in item[0], logs.items())) 
+    args.writer.add_scalars(f"Loss/Train_Loss", split_loss, 0)
+
+    args.writer.add_scalar("Total/Train_Loss", logs["TLoss"])
+
+def _log_validation_metrics(args, output):
+    logs = output['log']
+    loss = dict(filter(lambda item: "VLoss_" in item[0], logs.items())) 
+    args.writer.add_scalars(f"Loss/Val_Loss", loss)
+    args.writer.add_scalar("Total/Val_Loss", logs["VLoss"])
+
+    acc = dict(filter(lambda item: "VAcc_" in item[0], logs.items())) 
+    args.writer.add_scalars(f"Acc/Val_Acc", acc)
+    args.writer.add_scalar("Total/Val_Acc", logs["VAcc"])
