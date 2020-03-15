@@ -2,6 +2,7 @@ import logging
 import torch
 from dataset import BengaliAI
 from torch.utils.data import SubsetRandomSampler
+from cutmix.cutmix import CutMix
 
 def train_dataloader(params):
     
@@ -11,6 +12,9 @@ def train_dataloader(params):
     dataset = BengaliAI(folds=train_folds, train=True, 
                         data_root=params.data_root)
     
+    if params.cutmix:
+        dataset = CutMix(dataset, num_class=100, beta=1.0, prob=0.5, num_mix=2)  
+
     sampler = SubsetRandomSampler(range(2*params.batch_size)) if params.fast_dev_run else None
 
     loader = torch.utils.data.DataLoader(
