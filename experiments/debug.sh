@@ -4,11 +4,13 @@ python3.7 ../src/train.py \
     --data_root ../input\
     --val_folds 4\
     --test_id 0\
+    --cutmix 0\
     --pretrained False\
+    --freeze_blocks 20\
     --learning_rate 0.0001\
-    --epochs 2\
+    --epochs 1\
     --batch_size 4\
     --fast_dev_run True\
     --save_dir ../checkpoints\
-    --exp_name debug\
+    --exp_name exp\
     --log_interval 1
