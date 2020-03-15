@@ -4,7 +4,7 @@ python3.7 ../src/train.py \
     --data_root ../input\
     --val_folds 4\
     --test_id 0\
-    --cutmix 0.5\
+    --cutmix 0\
     --pretrained True\
     --freeze_blocks 20\
     --learning_rate 0.0001\
