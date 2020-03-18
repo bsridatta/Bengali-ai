@@ -51,7 +51,7 @@ class BengaliAI(Dataset):
         else: # train
             self.augmentations = albumentations.Compose([
                 albumentations.Resize(img_height, img_width, always_apply=True),
-                albumentations.ShiftScaleRotate(rotate_limit=10, p=0.9), 
+                albumentations.ShiftScaleRotate(rotate_limit=40, p=0.9), 
                 albumentations.Normalize(always_apply=True) 
             ])
 

@@ -8,7 +8,7 @@ python3.7 ../src/train.py \
     --pretrained False\
     --freeze_blocks 20\
     --learning_rate 0.0001\
-    --epochs 1\
+    --epochs 2\
     --batch_size 4\
     --fast_dev_run True\
     --save_dir ../checkpoints\
